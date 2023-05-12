@@ -1,0 +1,23 @@
+{
+  "name": "toystore-backend",
+  "version": "1.0.0",
+  "description": "This is the backend for Toy store",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "author": "JLAM25",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.4.0",
+    "mongoose": "^7.1.1",
+    "nodemon": "^2.0.22"
+  }
+}
