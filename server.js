@@ -3,10 +3,11 @@ const connectDB = require('./config/dbConnection');
 const dotenv = require('dotenv').config();
 const app = express();
 const errorHandler = require("./middleware/errorHandler")
+const cors = require("cors");
 
 connectDB();
 
-
+app.use(cors());
 const port = process.env.PORT;
 app.use(express.json());
 // API

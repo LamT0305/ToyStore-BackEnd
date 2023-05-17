@@ -7,9 +7,9 @@ const UserModel = require("../models/UserModel")
 // POST
 
 const register = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !role) {
         res.status(400)
         throw new Error("All fields must be valid")
     }
@@ -25,10 +25,11 @@ const register = asyncHandler(async (req, res) => {
     const user = await UserModel.create({
         name: name,
         email: email,
-        password: hashedPassword
+        password: hashedPassword,
+        role: role
     });
 
-    res.status(201).json({ status: 'success', user: user._id, name: user.name, email: user.email })
+    res.status(201).json({ status: 'success', user: user._id, name: user.name, email: user.email, role: user.role })
 })
 
 //@des Login user
@@ -49,7 +50,8 @@ const loginUser = asyncHandler(async (req, res) => {
             user: {
                 user: user.name,
                 email: user.email,
-                id: user._id
+                id: user._id,
+                role: user.role
             }
         }, process.env.ACCESS_TOKEN_SECRET, { expiresIn:'60m' })
 

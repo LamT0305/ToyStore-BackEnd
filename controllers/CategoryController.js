@@ -1,13 +1,11 @@
 const asyncHandler = require("express-async-handler");
-const { paginate } = require("../function");
 const Category = require("../models/CategoryModel")
 
 
 // GET category
 // access Public
 const getCategory = asyncHandler(async (req, res) => {
-    const page = parseInt(req.params.query) || 1;
-    const category = await paginate(Category, page, 10)
+    const category = await Category.find();
     res.status(200).json({ status: 'success', category: category });
 })
 
@@ -59,7 +57,7 @@ const updateCategory = asyncHandler(async (req, res) => {
 // access private
 const deleteCategory = asyncHandler(async (req, res) => {
     const category = await Category.findById(req.params.id)
-    if(!category){
+    if (!category) {
         res.status(404)
         throw new Error("not found")
     }
