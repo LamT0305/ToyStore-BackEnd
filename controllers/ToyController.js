@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const { paginate } = require("../function");
 const ToysModel = require("../models/ToysModel")
+
+
 // GET Toys
 // GET /api/toys
 
@@ -14,28 +16,31 @@ const getToys = asyncHandler(async (req, res) => {
 // POST /api/toys
 
 const createToys = asyncHandler(async (req, res) => {
-    const { name, price, image, description, category_id } = req.body
+    const { name, price, description, category_id } = req.body;
+    const image = req.file;
 
     if (!name || !price || !image || !description || !category_id) {
         res.status(400);
-        throw new Error("All fileds are required");
+        throw new Error("All fields are required");
     }
-    const isExist = await ToysModel.findOne({ name: name })
+
+    const isExist = await ToysModel.findOne({ name: name });
     if (isExist) {
-        res.status(400)
+        res.status(400);
         throw new Error("Toy has already been created");
     }
+
     const toy = await ToysModel.create({
         name: name,
         price: price,
-        image: image,
+        image: image.filename,
         description: description,
-        category_id: category_id
+        category_id: category_id,
     });
+
     console.log("Toy created successfully.");
     res.status(201).json({ status: 'success', toy: toy });
 });
-
 
 const updateToy = asyncHandler(async (req, res) => {
     const toy = ToysModel.findById(req.params.id);

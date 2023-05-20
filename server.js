@@ -19,6 +19,8 @@ app.use("/api/inventory", require("./routes/InventoryRoutes"))
 app.use("/api/user", require("./routes/UserRoutes"))
 app.use("/api/cart", require("./routes/CartRoutes"))
 
+app.use("/uploads", express.static("./uploads"))
+
 app.use(errorHandler);
 app.listen(port, () => {
     console.log("Server listening on " + port);

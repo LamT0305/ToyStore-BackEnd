@@ -14,19 +14,21 @@ const getCategory = asyncHandler(async (req, res) => {
 const createCategory = asyncHandler(async (req, res) => {
     const { name } = req.body;
     if (!name) {
-        res.status(400);
-        throw new Error("Name filed is required");
+        return res.json({ error: true, message: 'Invalid category name provided' })
     }
     const existingCategory = await Category.findOne({ name });
     if (existingCategory) {
-        res.status(400);
-        throw new Error('Category already exists');
+        return res.json({ error: true, message: 'Category already exists' })
     }
     const category = await Category.create({
         name: name,
     });
     console.log("Category created successfully.");
-    res.status(201).json({ status: 'success', category: category });
+    const cate = {
+        _id: category._id,
+        name: category.name
+    }
+    res.status(201).json({ status: 'success', category: cate });
 });
 
 // Update category
@@ -35,14 +37,12 @@ const createCategory = asyncHandler(async (req, res) => {
 const updateCategory = asyncHandler(async (req, res) => {
     const { name } = req.body;
     if (!name) {
-        res.status(400);
-        throw new Error("Name filed is required");
+        return res.json({ error: true, message: 'Invalid category name provided' })
     }
 
     const isAvailable = await Category.findById(req.params.id)
     if (!isAvailable) {
-        res.status(404);
-        throw new Error("Category not found");
+        return res.json({ error: true, message: 'Not found' })
     }
 
     const category = await Category.findByIdAndUpdate(
@@ -58,8 +58,7 @@ const updateCategory = asyncHandler(async (req, res) => {
 const deleteCategory = asyncHandler(async (req, res) => {
     const category = await Category.findById(req.params.id)
     if (!category) {
-        res.status(404)
-        throw new Error("not found")
+        return res.json({ error: true, message: 'Not found' })
     }
 
     await Category.findByIdAndRemove(req.params.id)

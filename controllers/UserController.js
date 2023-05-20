@@ -10,15 +10,13 @@ const register = asyncHandler(async (req, res) => {
     const { name, email, password, role } = req.body;
 
     if (!name || !email || !password || !role) {
-        res.status(400)
-        throw new Error("All fields must be valid")
+        return res.json("All fields must be provided")
     }
 
     const isAvailable = await UserModel.findOne({ email: email })
 
     if (isAvailable) {
-        res.status(400)
-        throw new Error("User already registered")
+        return res.json("User is available")
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -38,8 +36,7 @@ const register = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
     if (!email || !password) {
-        res.status(400)
-        throw new Error("All field are required!")
+        return res.json("All field must be provided")
     }
 
     const user = await UserModel.findOne({ email: email })
@@ -53,12 +50,11 @@ const loginUser = asyncHandler(async (req, res) => {
                 id: user._id,
                 role: user.role
             }
-        }, process.env.ACCESS_TOKEN_SECRET, { expiresIn:'60m' })
+        }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' })
 
         res.status(200).json({ status: "success", accessToken })
     } else {
-        res.status(401)
-        throw new Error("Email or password is not valid!")
+        return res.json("Invalid password");
     }
 });
 
