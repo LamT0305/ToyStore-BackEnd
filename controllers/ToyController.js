@@ -20,14 +20,12 @@ const createToys = asyncHandler(async (req, res) => {
     const image = req.file;
 
     if (!name || !price || !image || !description || !category_id) {
-        res.status(400);
-        throw new Error("All fields are required");
+        return res.json({ status: "failed", message: "All fields must be provided" })
     }
 
     const isExist = await ToysModel.findOne({ name: name });
     if (isExist) {
-        res.status(400);
-        throw new Error("Toy has already been created");
+        return res.json({ status: "failed", message: "Toy name already exists" });
     }
 
     const toy = await ToysModel.create({
@@ -46,14 +44,12 @@ const updateToy = asyncHandler(async (req, res) => {
     const toy = ToysModel.findById(req.params.id);
 
     if (!toy) {
-        res.status(404)
-        throw new Error("Not Found");
+        return res.json({ status: "failed", message: "Toy not found" });
     }
 
     const { name, price, image, description, category_id } = req.body
     if (!name || !image || !price || !category_id || !description) {
-        res.status(400)
-        throw new Error("All fields are required")
+        return res.json({ status: "failed", message: "All fields must be provided" })
     }
 
     const updateToy = await ToysModel.findByIdAndUpdate(
@@ -69,8 +65,7 @@ const deleteToy = asyncHandler(async (req, res) => {
     const toy = ToysModel.findById(req.params.id);
 
     if (!toy) {
-        res.status(404)
-        throw new Error("Not Found");
+        return res.json({ status: "failed", message: "Toy not found" });
     }
 
     await ToysModel.findByIdAndDelete(req.params.id)
@@ -81,8 +76,7 @@ const deleteToy = asyncHandler(async (req, res) => {
 const getToyByID = asyncHandler(async (req, res) => {
     const toy = await ToysModel.findById(req.params.id).populate('category_id')
     if (!toy) {
-        res.status(404)
-        throw new Error("Not Found");
+        return res.json({ status: "failed", message: "Toy not found" });
     }
 
     res.status(200).json({ status: "success", toy: toy });

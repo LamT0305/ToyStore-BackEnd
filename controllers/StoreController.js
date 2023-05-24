@@ -15,10 +15,15 @@ const getStore = asyncHandler(async (req, res) => {
 const createStore = asyncHandler(async (req, res) => {
     const { name, city } = req.body;
     if (!name || !city) {
-        res.status(400);
-        throw new Error("Name filed is required");
+        return res.json({ message: "All fields must be provided", error: true });
     }
-    
+
+    const isAvailable = await StoreModel.findOne({ name: name })
+
+    if (isAvailable) {
+        return res.json({ message: "Name is already exists", error: true });
+    }
+
     const store = await StoreModel.create({
         name: name,
         city: city
@@ -54,9 +59,8 @@ const updateStore = asyncHandler(async (req, res) => {
 // access private
 const deleteStore = asyncHandler(async (req, res) => {
     const store = await StoreModel.findById(req.params.id)
-    if(!store){
-        res.status(404)
-        throw new Error("not found")
+    if (!store) {
+        return res.json({ error: true, message: 'Store not found' })
     }
 
     await StoreModel.findByIdAndRemove(req.params.id)

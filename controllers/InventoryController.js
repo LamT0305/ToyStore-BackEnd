@@ -13,8 +13,7 @@ const getAllInventory = asyncHandler(async (req, res) => {
 const addInventory = asyncHandler(async (req, res) => {
     const { store_id, toy_id, quantity } = req.body;
     if (!store_id || !toy_id || !quantity) {
-        res.status(400)
-        throw new Error("Invalid inventory id or quantity")
+        return res.json({ status: 'failed', message: "All items must be provided" })
     }
     const inventory = await Inventory.create({ store_id, toy_id, quantity });
     res.status(201).json({ status: "success", inventory: inventory });
@@ -25,8 +24,7 @@ const updateInventory = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const { store_id, toy_id, quantity } = req.body;
     if (!store_id || !toy_id || !quantity) {
-        res.status(400)
-        throw new Error("Invalid inventory id or quantity")
+        return res.json({ status: "failed", message: "Invalid inventory id or quantity" })
     }
     const inventory = await Inventory.findById(id);
 
@@ -38,8 +36,7 @@ const updateInventory = asyncHandler(async (req, res) => {
         )
         res.status(200).json({ status: "success", inventory: inventory })
     } else {
-        res.status(404);
-        throw new Error("Inventory not found");
+        return res.status("Not Found")
     }
 });
 
@@ -52,8 +49,7 @@ const deleteInventory = asyncHandler(async (req, res) => {
         await inventory.remove();
         res.json({ message: "Inventory removed" });
     } else {
-        res.status(404);
-        throw new Error("Inventory not found");
+        return res.status("Not Found")
     }
 });
 
