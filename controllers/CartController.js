@@ -38,12 +38,15 @@ const addToCart = asyncHandler(async (req, res) => {
 
     const cartUser = await CartModel.findOne({ user_id: user.id })
 
+    
     if (!cartUser) {
         await CartModel.create({
             user_id: user.id,
             items: [],
         })
     }
+
+    
 
     // const isExistIndex = cartUser.items.fineIndex(item => item.id === toy_id)
     const existingItemIndex = cartUser.items.findIndex((item) => item.toy_id.toString() === toy_id);
@@ -83,7 +86,7 @@ const updateCartUser = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error(" All items must be provided");
     }
-    const cart = await CartModel.findOneAndUpdate(
+    await CartModel.findOneAndUpdate(
         { user_id: req.user.id, 'items.toy_id': id },
         { $set: { 'items.$.quantity': quantity } },
         { new: true }

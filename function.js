@@ -1,8 +1,9 @@
-const paginate = async (model, page, limit, populate) => {
+const paginate = async (model, page, limit, populate, item) => {
   try {
     const results = await model
       .find()
       .populate(populate)
+      .populate(item)
       .skip((page - 1) * limit)
       .limit(limit)
       .exec();

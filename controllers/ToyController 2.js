@@ -30,7 +30,6 @@ const createToys = asyncHandler(async (req, res) => {
         return res.json({ status: "error", message: "Toy name already exists" });
     }
 
-    
     const toy = await ToysModel.create({
         name: name,
         price: price,
@@ -56,7 +55,7 @@ const updateToy = asyncHandler(async (req, res) => {
         return res.json({ status: "error", message: "Toy not found" });
     }
 
-    const { name, price, description, category_id, store_id, image } = req.body;
+    const { name, price, description, category_id, store_id } = req.body;
 
     if (!name || !price || !category_id || !description || !store_id) {
         return res.json({ status: "error", message: "All fields must be provided" });
@@ -65,8 +64,7 @@ const updateToy = asyncHandler(async (req, res) => {
     // Check if a new image is uploaded
     if (req.file) {
         // Remove the existing image
-        const imagePath = path.join(__dirname, "../uploads/", toy.image);
-        console.log(imagePath)
+        const imagePath = path.join(__dirname, `../uploads/${toy.image}`);
         try {
             fs.unlinkSync(imagePath);
         } catch (err) {
@@ -76,7 +74,6 @@ const updateToy = asyncHandler(async (req, res) => {
         toy.image = req.file.filename;
     }
 
-    console.log(image)
     toy.name = name;
     toy.price = price;
     toy.description = description;
@@ -87,7 +84,7 @@ const updateToy = asyncHandler(async (req, res) => {
         await toy.save();
         res.status(200).json({ status: "success" });
     } catch (error) {
-        res.json({ status: "error", message: error });
+        res.json({ status: "error", message: "Failed to update toy" });
     }
 });
 

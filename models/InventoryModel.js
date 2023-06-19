@@ -10,10 +10,9 @@ const inventorySchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Toy",
         required: true
-
     },
     quantity_available: {
-        type: 'string',
+        type: Number,
         required: true
     }
 },

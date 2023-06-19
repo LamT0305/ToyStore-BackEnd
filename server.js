@@ -10,6 +10,7 @@ connectDB();
 app.use(cors());
 const port = process.env.PORT;
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 // API
 
 app.use("/api/toys", require("./routes/ToyRoutes"));
@@ -18,8 +19,8 @@ app.use("/api/store", require("./routes/StoreRoutes"))
 app.use("/api/inventory", require("./routes/InventoryRoutes"))
 app.use("/api/user", require("./routes/UserRoutes"))
 app.use("/api/cart", require("./routes/CartRoutes"))
-
 app.use("/uploads", express.static("./uploads"))
+app.use("/api/order", require("./routes/OrderRoutes"))
 
 app.use(errorHandler);
 app.listen(port, () => {

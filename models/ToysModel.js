@@ -6,7 +6,7 @@ const toySchema = mongoose.Schema({
         required: true
     },
     price: {
-        type: 'string',
+        type: Number,
         required: true,
     },
     image: {
@@ -21,7 +21,12 @@ const toySchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
         required: true
-    }
+    },
+    store_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Store',
+        required: true
+    },
 },
     {
         timestamps: true,

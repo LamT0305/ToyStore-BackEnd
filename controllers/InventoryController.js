@@ -22,16 +22,16 @@ const addInventory = asyncHandler(async (req, res) => {
 // Update inventory
 const updateInventory = asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const { store_id, toy_id, quantity } = req.body;
-    if (!store_id || !toy_id || !quantity) {
-        return res.json({ status: "failed", message: "Invalid inventory id or quantity" })
+    const { quantity } = req.body;
+    if (!quantity) {
+        return res.json({ status: "failed", message: "Invalid quantity" })
     }
     const inventory = await Inventory.findById(id);
 
     if (inventory) {
         const inventory = await Inventory.findByIdAndUpdate(
             id,
-            req.body,
+            {$set: {'quantity_available': quantity}},
             { new: true }
         )
         res.status(200).json({ status: "success", inventory: inventory })
@@ -53,9 +53,28 @@ const deleteInventory = asyncHandler(async (req, res) => {
     }
 });
 
+const getInventoryByStore = asyncHandler(async (req, res) => {
+    const store_id = req.query.store_id
+    if (!store_id) {
+        return res.json({ error: true, message: " You must provide a store" })
+    }
+    const inventory = await Inventory.find({ store_id: store_id }).populate("store_id").populate("toy_id");
+    if (inventory) {
+        const object = {
+            store_id: inventory.store_id,
+            toy: inventory.toy_id,
+            quantity: inventory.quantity
+        }
+        return res.json({ status: "success", inventory: inventory })
+    } else {
+        return res.json({ error: true, message: " Inventory not found" })
+    }
+})
+
 module.exports = {
     getAllInventory,
     addInventory,
     updateInventory,
-    deleteInventory
+    deleteInventory,
+    getInventoryByStore
 }
