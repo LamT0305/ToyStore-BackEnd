@@ -38,7 +38,7 @@ const addToCart = asyncHandler(async (req, res) => {
 
     const cartUser = await CartModel.findOne({ user_id: user.id })
 
-    
+
     if (!cartUser) {
         await CartModel.create({
             user_id: user.id,
@@ -46,7 +46,7 @@ const addToCart = asyncHandler(async (req, res) => {
         })
     }
 
-    
+
 
     // const isExistIndex = cartUser.items.fineIndex(item => item.id === toy_id)
     const existingItemIndex = cartUser.items.findIndex((item) => item.toy_id.toString() === toy_id);
@@ -54,7 +54,8 @@ const addToCart = asyncHandler(async (req, res) => {
     if (existingItemIndex === -1) {
         cartUser.items.push({ toy_id, quantity })
     } else {
-        cartUser.items[existingItemIndex].quantity += quantity;
+        const currentQuantity = parseInt(cartUser.items[existingItemIndex].quantity)
+        cartUser.items[existingItemIndex].quantity = currentQuantity + parseInt(quantity)
     }
 
     await cartUser.save();
@@ -94,7 +95,7 @@ const updateCartUser = asyncHandler(async (req, res) => {
 
 
 
-    res.status(201).json({message:"Updated quantity successfully", status: 'success'});
+    res.status(201).json({ message: "Updated quantity successfully", status: 'success' });
 
 });
 
